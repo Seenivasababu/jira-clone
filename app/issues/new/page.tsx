@@ -1,5 +1,5 @@
 'use client';
-import { Button, TextField, Callout , Text} from '@radix-ui/themes';
+import { Button, TextField, Callout, Text } from '@radix-ui/themes';
 import React, { useState } from 'react';
 import SimpleMDE from 'react-simplemde-editor';
 import 'easymde/dist/easymde.min.css';
@@ -7,13 +7,15 @@ import { useForm, Controller } from 'react-hook-form';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {z } from 'zod'
+import { z } from 'zod';
 import { issueSchema } from '@/app/validationSchema';
 import ErrorMessage from '@/app/components/ErrorMessage';
+import Spinner from '@/app/components/Spinner';
 
-type IssueForm  = z.infer<typeof issueSchema>
+type IssueForm = z.infer<typeof issueSchema>;
 
 const NewIssuePage = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
   const {
@@ -21,13 +23,20 @@ const NewIssuePage = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IssueForm>({resolver: zodResolver(issueSchema)});
+  } = useForm<IssueForm>({ resolver: zodResolver(issueSchema) });
 
   const onSubmit = handleSubmit(async (data) => {
     try {
+      setIsSubmitting(true);
       await axios.post('/api/issues', data);
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(1000);
+        }, 1000);
+      });
       router.push('/issues');
     } catch (error) {
+      setIsSubmitting(false);
       setError('An unexpected error occured');
     }
   });
@@ -54,7 +63,9 @@ const NewIssuePage = () => {
         ></Controller>
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
-        <Button>Submit New Issue</Button>
+        <Button disabled={isSubmitting}>
+          Submit New Issue {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
