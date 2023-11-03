@@ -11,24 +11,34 @@ const NewIssue = async () => {
 
   return (
     <div>
-      <IssueAction/>
-      <Table.Root variant='surface'>
+      <IssueAction />
+      <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
             <Table.ColumnHeaderCell>Issue</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className='hidden md:table-cell'>Status</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className='hidden md:table-cell'>Created At</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell className="hidden md:table-cell">
+              Status
+            </Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell className="hidden md:table-cell">
+              Created At
+            </Table.ColumnHeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {issues.map((issue) => {
-            return <Table.Row key={issue.id}>
-               <Table.ColumnHeaderCell>{issue.title}</Table.ColumnHeaderCell>
-               <Table.ColumnHeaderCell className='hidden md:table-cell'>
-                  <IssueStatusBadge status={issue.status}/>
-                  </Table.ColumnHeaderCell>
-               <Table.ColumnHeaderCell className='hidden md:table-cell'>{issue.createdAt.toDateString()}</Table.ColumnHeaderCell>
-            </Table.Row>;
+            return (
+              <Table.Row key={issue.id}>
+                <Table.ColumnHeaderCell>
+                  <Link href={`/issues/${issue.id}`}> {issue.title}</Link>
+                </Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="hidden md:table-cell">
+                  <IssueStatusBadge status={issue.status} />
+                </Table.ColumnHeaderCell>
+                <Table.ColumnHeaderCell className="hidden md:table-cell">
+                  {issue.createdAt.toDateString()}
+                </Table.ColumnHeaderCell>
+              </Table.Row>
+            );
           })}
         </Table.Body>
       </Table.Root>
