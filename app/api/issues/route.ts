@@ -3,8 +3,8 @@ import { z } from 'zod';
 import prisma from '@/prisma/client';
 
 const issueSchema = z.object({
-  title: z.string().min(1).max(250),
-  description: z.string().min(1),
+  title: z.string().min(1,'Title is required').max(250),
+  description: z.string().min(1, 'Description is required'),
 });
 
 export async function POST(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
   const validation = issueSchema.safeParse(body);
 
   if (!validation.success) {
-    NextResponse.json(validation.error.errors, { status: 400 });
+    NextResponse.json(validation.error.format(), { status: 400 });
   }
 
   const newIssue = await prisma.issue.create({
