@@ -29,11 +29,6 @@ const NewIssuePage = () => {
     try {
       setIsSubmitting(true);
       await axios.post('/api/issues', data);
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(1000);
-        }, 1000);
-      });
       router.push('/issues');
     } catch (error) {
       setIsSubmitting(false);
