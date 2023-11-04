@@ -7,7 +7,6 @@ import IssueAction from '../components/IssueAction';
 
 const NewIssue = async () => {
   const issues = await prisma.issue.findMany({});
-  console.log(issues);
 
   return (
     <div>
