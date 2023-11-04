@@ -7,6 +7,7 @@ import React from 'react';
 import Link from 'next/link';
 import IssueDetail from './IssueDetail';
 import EditIssueButton from './EditIssueButton';
+import DeleteIssueButton from './DeleteIssueButton';
 
 interface Props {
   params: { id: string };
@@ -23,8 +24,15 @@ const IssueDetailPage = async ({ params }: Props) => {
   }
   return (
     <Grid columns={{ initial: '1', md: '2' }} gap="5">
-      <IssueDetail issue={issue} />
-      <EditIssueButton issueId={issue.id} />
+      <Box>
+        <IssueDetail issue={issue} />
+      </Box>
+      <Box>
+        <Flex direction="column" gap="4">
+          <EditIssueButton issueId={issue.id} />
+          <DeleteIssueButton issueId={issue.id} />
+        </Flex>
+      </Box>
     </Grid>
   );
 };
