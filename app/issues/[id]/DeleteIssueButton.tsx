@@ -2,33 +2,60 @@
 import { AlertDialog, Button, Flex } from '@radix-ui/themes';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
-   const router = useRouter()
+  const router = useRouter();
+  const [error, setError] = useState(false);
+
+  const deletebutton = async () => {
+    try {
+      await axios.delete('/api/issues/' + issueId);
+      router.push('/issues');
+      router.refresh();
+    } catch (error) {
+      setError(true);
+    }
+  };
+
   return (
-    <AlertDialog.Root>
-      <AlertDialog.Trigger>
-        <Button color="red">Delete Issue</Button>
-      </AlertDialog.Trigger>
-      <AlertDialog.Content>
-        <AlertDialog.Title>Confirm Deletion</AlertDialog.Title>
+    <>
+      <AlertDialog.Root>
+        <AlertDialog.Trigger>
+          <Button color="red">Delete Issue</Button>
+        </AlertDialog.Trigger>
+        <AlertDialog.Content>
+          <AlertDialog.Title>Confirm Deletion</AlertDialog.Title>
+          <AlertDialog.Description>
+            Are you sure want to delete? This action can't be undone
+          </AlertDialog.Description>
+          <Flex mt="4" gap="3">
+            <AlertDialog.Cancel>
+              <Button color="gray">Cancel</Button>
+            </AlertDialog.Cancel>
+            <AlertDialog.Action>
+              <Button color="red" onClick={deletebutton}>
+                Delete Issue
+              </Button>
+            </AlertDialog.Action>
+          </Flex>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
+      <AlertDialog.Root>
+        <AlertDialog.Title>Error</AlertDialog.Title>
         <AlertDialog.Description>
-          Are you sure want to delete? This action can't be undone
+          This issue could not be deleted
         </AlertDialog.Description>
-        <Flex mt='4' gap='3'>
-          <AlertDialog.Cancel>
-            <Button color='gray'>Cancel</Button>
-          </AlertDialog.Cancel>
-          <AlertDialog.Action>
-            <Button color='red' onClick={async ()=>{
-               await axios.delete('/api/issues/'+issueId)
-               router.push('/issues')
-               router.refresh()
-            }}>Delete Issue</Button>
-          </AlertDialog.Action>
-        </Flex>
-      </AlertDialog.Content>
-    </AlertDialog.Root>
+        <Button
+          color="gray"
+          variant="soft"
+          mt="2"
+          onClick={() => setError(false)}
+        >
+          Ok
+        </Button>
+      </AlertDialog.Root>
+    </>
   );
 };
 
