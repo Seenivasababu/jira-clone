@@ -4,12 +4,14 @@ import Link from 'next/link';
 import prisma from '@/prisma/client';
 import IssueStatusBadge from '../components/IssueStatusBadge';
 import IssueAction from '../components/IssueAction';
+import IssueStatusFilter from '../components/IssueStatusFilter';
 
 const NewIssue = async () => {
   const issues = await prisma.issue.findMany({});
 
   return (
     <div>
+      <IssueStatusFilter/>
       <IssueAction />
       <Table.Root variant="surface">
         <Table.Header>
