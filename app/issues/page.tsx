@@ -5,13 +5,23 @@ import prisma from '@/prisma/client';
 import IssueStatusBadge from '../components/IssueStatusBadge';
 import IssueAction from '../components/IssueAction';
 import IssueStatusFilter from '../components/IssueStatusFilter';
+import { Status } from '@prisma/client';
 
-const NewIssue = async () => {
-  const issues = await prisma.issue.findMany({});
+interface Props {
+  searchParams: { status: Status };
+}
+
+const IssuePage = async ({ searchParams }: Props) => {
+  const statuses = Object.values(Status);
+  const status = statuses.includes(searchParams.status) ? searchParams.status : undefined
+  const where = {status}
+  const issues = await prisma.issue.findMany({
+   where,
+  });
 
   return (
     <div>
-      <IssueStatusFilter/>
+      <IssueStatusFilter />
       <IssueAction />
       <Table.Root variant="surface">
         <Table.Header>
@@ -47,4 +57,4 @@ const NewIssue = async () => {
   );
 };
 
-export default NewIssue;
+export default IssuePage;
