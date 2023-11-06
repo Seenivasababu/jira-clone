@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Table } from '@radix-ui/themes';
+import { Button, Table, Flex } from '@radix-ui/themes';
 import Link from 'next/link';
 import prisma from '@/prisma/client';
 import IssueStatusBadge from '../components/IssueStatusBadge';
@@ -7,9 +7,10 @@ import IssueAction from '../components/IssueAction';
 import IssueStatusFilter from '../components/IssueStatusFilter';
 import { Issue, Status } from '@prisma/client';
 import { ArrowUpIcon } from '@radix-ui/react-icons';
+import Pagination from '../components/Pagination';
 
 interface Props {
-  searchParams: { status: Status, orderBy: keyof Issue };
+  searchParams: { status: Status; orderBy: keyof Issue };
 }
 
 const IssuePage = async ({ searchParams }: Props) => {
@@ -29,10 +30,11 @@ const IssuePage = async ({ searchParams }: Props) => {
     ? searchParams.status
     : undefined;
 
-  const orderBy = columns.map(column=>column.value).includes(searchParams.orderBy)
-    ? {[searchParams.orderBy]:'asc'}
+  const orderBy = columns
+    .map((column) => column.value)
+    .includes(searchParams.orderBy)
+    ? { [searchParams.orderBy]: 'asc' }
     : undefined;
-
 
   const where = { status };
   const issues = await prisma.issue.findMany({
@@ -42,8 +44,10 @@ const IssuePage = async ({ searchParams }: Props) => {
 
   return (
     <div>
-      <IssueStatusFilter />
-      <IssueAction />
+      <Flex  justify={'between'} gap={'2'}>
+        <IssueStatusFilter />
+        <IssueAction />
+      </Flex>
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
@@ -57,7 +61,9 @@ const IssuePage = async ({ searchParams }: Props) => {
                   >
                     {column.label}
                   </Link>
-                  {column.value === searchParams.orderBy && <ArrowUpIcon className='inline'/>}
+                  {column.value === searchParams.orderBy && (
+                    <ArrowUpIcon className="inline" />
+                  )}
                 </Table.ColumnHeaderCell>
               );
             })}
@@ -81,6 +87,8 @@ const IssuePage = async ({ searchParams }: Props) => {
           })}
         </Table.Body>
       </Table.Root>
+      <Pagination itemCount={10} pageSize={3} currentPage={1}/>
+      
     </div>
   );
 };
